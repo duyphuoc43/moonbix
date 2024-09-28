@@ -59,21 +59,39 @@ while True:
         gold = detections[1]
 
         if(len(detections[2]) > 0 and len(detections[3]) > 0):
-            moc = detections[2]
-            phithuyen = detections[3]
+            
+            mocs = detections[2]
+            
+            phithuyens = detections[3]
+            
 
-            x1 = int(phithuyen[0]["center_x"])
-            y1 = int(phithuyen[0]["y_box"] + phithuyen[0]["h_box"])
-            x2 = int(moc[0]["center_x"])
-            y2 = int(moc[0]["center_y"])
-            print(x1,y1,x2,y2)
+            x1 = int(phithuyens[0]["center_x"])
+            y1 = int(phithuyens[0]["y_box"] + phithuyens[0]["h_box"])
+            confidence_phithuyen = phithuyens[0]["confidence"]
+            x2 = int(mocs[0]["center_x"])
+            y2 = int(mocs[0]["center_y"])
+            confidence_moc = mocs[0]["confidence"]
+
+            for phithuyen in phithuyens:
+                if(phithuyen["confidence"] > confidence_phithuyen):
+                    x1 = int(phithuyen["center_x"])
+                    y1 = int(phithuyen["y_box"] + phithuyen["h_box"])
+
+            for moc in mocs:
+                if(moc["confidence"] > confidence_moc):
+                    x2 = int(moc["center_x"])
+                    y2 = int(moc["y_box"] + moc["h_box"])
+            size = 20
             for item in gold:
-                for i in range(-10, 10):
+                for i in range(-size, size):
                     x3 = int(item["center_x"]) + i
-                    for j in range(-10, 10):
+                    for j in range(-size, size):
                         y3 = int(item["center_y"]) + j
+
+                        
                         if((y2 - y1)*(x3 - x1) - (y3 - y1)*(x2 - x1) == 0):
                             pyautogui.click(150, 350)
+                            print(x1,y1,x2,y2,x3,y3)
                             print("click")
                             time.sleep(2)
 
