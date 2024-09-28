@@ -6,14 +6,15 @@ from ultralytics import YOLO
 import pyautogui
 
 # Kích thước màn hình muốn quay
-monitor_width = 370
-monitor_height = 700
-
+monitor_width = 380
+monitor_height = 690
+top = 10
+left = 0
 # Khởi tạo đối tượng mss để quay màn hình
 sct = mss.mss()
 
 # Xác định vùng màn hình cần quay
-monitor = {"top": 0, "left": 0, "width": monitor_width, "height": monitor_height}
+monitor = {"top": top, "left": left, "width": monitor_width, "height": monitor_height}
 
 # Load mô hình YOLOv8
 model = YOLO("model/best1.pt")
@@ -33,8 +34,8 @@ while True:
     # Sử dụng mô hình YOLO để phát hiện đối tượng
     results = model(img, verbose=False)
 
-    annotated_frame = results[0].plot()  # Vẽ các hộp bounding box lên frame
-    cv2.imshow("Screen Capture with YOLOv8 Detection", annotated_frame)
+    # annotated_frame = results[0].plot()  # Vẽ các hộp bounding box lên frame
+    # cv2.imshow("Screen Capture with YOLOv8 Detection", annotated_frame)
 
     for result in results:
         detections = [[],[],[],[]]
@@ -81,20 +82,24 @@ while True:
                 if(moc["confidence"] > confidence_moc):
                     x2 = int(moc["center_x"])
                     y2 = int(moc["y_box"] + moc["h_box"])
-            size = 20
+                    
+            size = 5
+            
             for item in gold:
+                stop = False
+               
                 for i in range(-size, size):
+                    if (stop):
+                        break
                     x3 = int(item["center_x"]) + i
                     for j in range(-size, size):
                         y3 = int(item["center_y"]) + j
-
-                        
                         if((y2 - y1)*(x3 - x1) - (y3 - y1)*(x2 - x1) == 0):
                             pyautogui.click(150, 350)
                             print(x1,y1,x2,y2,x3,y3)
                             print("click")
-                            time.sleep(2)
-
+                            stop = True
+                # time.sleep(1)
     # Thoát nếu nhấn phím 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
