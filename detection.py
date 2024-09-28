@@ -32,11 +32,10 @@ while True:
 
     # Sử dụng mô hình YOLO để phát hiện đối tượng
     results = model(img, verbose=False)
-        # Hiển thị kết quả với hộp giới hạn
+
     # annotated_frame = results[0].plot()  # Vẽ các hộp bounding box lên frame
-    
-    # # Hiển thị frame
     # cv2.imshow("Screen Capture with YOLOv8 Detection", annotated_frame)
+
     for result in results:
         detections = [[],[],[],[]]
         if result.boxes is not None:
@@ -64,14 +63,14 @@ while True:
             phithuyen = detections[3]
 
             x1 = phithuyen[0]["center_x"]
-            y1 = phithuyen[0]["center_x"]
+            y1 = phithuyen[0]["center_y"]
 
             x2 = moc[0]["center_x"]
-            y2 = moc[0]["center_x"]
+            y2 = moc[0]["center_y"]
 
             for item in gold:
                 x3 = item["center_x"]
-                y3 = item["center_x"]
+                y3 = item["center_y"]
 
                 if((y2 - y1)*(x3 - x1) - (y3 - y1)*(x2 - x1) == 0):
                     pyautogui.click(150, 350)
@@ -81,9 +80,6 @@ while True:
     # Thoát nếu nhấn phím 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
-    # # In FPS (tùy chọn)
-    # print("FPS: {}".format(1 / (time.time() - start_time)))
 
 # Giải phóng các tài nguyên
 cv2.destroyAllWindows()
